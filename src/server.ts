@@ -11,7 +11,7 @@ app.get('/:code', async (request, reply) => {
         code: z.string().min(3),
     })
 
-    const { code } = getLinkSchema.parse( request.params)
+    const { code } = getLinkSchema.parse(request.params)
 
     const result = await sql /*sql*/ `
         select id, original_url
@@ -20,7 +20,7 @@ app.get('/:code', async (request, reply) => {
     `
 
     if (result.length === 0)
-        return reply.status(400).send({message: 'Link not found'})
+        return reply.status(400).send({ message: 'Link not found' })
 
     const link = result[0]
 
@@ -56,11 +56,11 @@ app.post('/api/links', async (request, reply) => {
 
         const link = result[0]
 
-        return reply.status(201).send({ shortLinkId : link.id })
-    } catch(err) {
-        if(err instanceof postgres.PostgresError) {
-            if(err.code === '23505') {
-                return reply.status(400).send({ message: 'Duplicated code!'})
+        return reply.status(201).send({ shortLinkId: link.id })
+    } catch (err) {
+        if (err instanceof postgres.PostgresError) {
+            if (err.code === '23505') {
+                return reply.status(400).send({ message: 'Duplicated code!' })
             }
         }
 
@@ -70,17 +70,17 @@ app.post('/api/links', async (request, reply) => {
     }
 })
 
-app.get('/api/metrics', async ()=> {
+app.get('/api/metrics', async () => {
     const result = await redis.zRangeByScoreWithScores('metrics', 0, 50)
 
     const metrics = result
-                    .sort((a, b) => b.score - a.score)
-                    .map(item => {
-                        return {
-                            shortLinkId: Number(item.value),
-                            clicks: item.score,
-                        }
-                    })
+        .sort((a, b) => b.score - a.score)
+        .map(item => {
+            return {
+                shortLinkId: Number(item.value),
+                clicks: item.score,
+            }
+        })
 
     return metrics;
 })
@@ -88,6 +88,6 @@ app.get('/api/metrics', async ()=> {
 
 app.listen({
     port: 3000
-}).then(()=> {
+}).then(() => {
     console.log('server running on port 3000')
 })
