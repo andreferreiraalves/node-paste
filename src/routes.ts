@@ -78,6 +78,37 @@ export default async function (app: FastifyInstance) {
         })
     })
 
+    app.put('/api/:guid', async (request, reply) => {
+        const paramSchema = z.object({
+            guid: z.string()
+        })
+        const bodySchema = z.object({
+            message: z.string().min(3)
+        })
+
+        const { guid } = paramSchema.parse(request.params)
+        const { message } = bodySchema.parse(request.body)
+
+        try {
+            const objectDB = await redis.get(guid)
+            if (!objectDB)
+                return reply.status(400).send({
+                    message: "Guid not found"
+                })
+
+            const newMessage = JSON.parse(objectDB)
+            newMessage.message = message
+
+            await redis.set(guid, JSON.stringify(newMessage))
+
+            return reply.status(201).send(newMessage)
+        }
+        catch (err) {
+            console.log(err)
+            return reply.status(500).send(err)
+        }
+    })
+
     app.get('/api/:guid', async (request, reply) => {
         const paramSchema = z.object({
             guid: z.string()
@@ -87,7 +118,9 @@ export default async function (app: FastifyInstance) {
         const result = await redis.get(guid);
 
         if (!result)
-            return reply.status(404)
+            return reply.status(404).send({
+                message: "Guid not found"
+            })
 
         const response = JSON.parse(result)
         return response

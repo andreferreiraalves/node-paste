@@ -17,3 +17,26 @@ Content-Type: application/json
     "code" : "teste",
     "url" : "https://google.com.br"
 }
+
+
+### 
+
+POST http://localhost:3000/api
+Content-Type: application/json
+
+{
+    "message" : "teste de mensagem alterada"
+}
+
+###
+
+PUT  http://localhost:3000/api/ab977cc9-2e81-4824-9849-4a182f68e3df
+Content-Type: application/json
+
+{
+    "message" : "mensagem alterada"
+}
+
+### 
+
+GET  http://localhost:3000/api/ab977cc9-2e81-4824-9849-4a182f68e3df
