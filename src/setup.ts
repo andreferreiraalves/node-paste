@@ -1,4 +1,4 @@
-import { sql } from "./lisb/postgres";
+import { sql } from "./lib/postgres";
 
 async function setup() {
     await sql /*sql*/`
@@ -8,6 +8,14 @@ async function setup() {
         original_url TEXT,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )`
+
+    await sql /*sql*/`
+       create table if not exists itens (
+        id serial primary key,
+        text_value text not null,
+        created_at timestamp default CURRENT_TIMESTAMP
+       )
+    `
 
     await sql.end()
 
