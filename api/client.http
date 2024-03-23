@@ -1,25 +1,3 @@
-GET  http://localhost:3000/api/metrics
-
-###
-
-GET  http://localhost:3000/teste
-
-
-###
-GET http://localhost:3000/api/links
-
-### 
-
-POST http://localhost:3000/api/links
-Content-Type: application/json
-
-{
-    "code" : "teste",
-    "url" : "https://google.com.br"
-}
-
-
-### 
 
 POST http://localhost:3000/api
 Content-Type: application/json
