@@ -18,6 +18,7 @@
     "typescript": "^5.4.2"
   },
   "dependencies": {
+    "dotenv": "^16.4.5",
     "fastify": "^4.26.2",
     "postgres": "^3.4.3",
     "redis": "^4.6.13",
