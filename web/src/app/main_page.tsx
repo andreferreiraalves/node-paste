@@ -1,5 +1,6 @@
 "use client";
 
+import getApiUrl from "@/helpers/api";
 import { ChangeEvent, useState } from "react";
 
 export default function MainPage() {
@@ -9,7 +10,17 @@ export default function MainPage() {
     setMessage(e.target.value);
   };
 
-  const send = () => {
+  const send = async () => {
+    const result = await fetch(getApiUrl(), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify( {
+        message
+      })
+
+    });
+    const response = await result.json()
+
     navigator.clipboard.writeText("ronaldo");
     alert("Link copiado para clipbloard");
   };
