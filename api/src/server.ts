@@ -9,21 +9,19 @@ const app = fastify()
 app.register(require('@fastify/cors'), (instance) => {
     return (req: any, callback: any) => {
         const corsOptions = {
+            // This is NOT recommended for production as it enables reflection exploits
             origin: true
         };
 
         // do not include CORS headers for requests from localhost
-        if (/^localhost$/m.test(req.headers.origin)) {
+        if (req.headers.host.indexOf('localhost') != -1) {
             corsOptions.origin = false
         }
-
-        corsOptions.origin = false
 
         // callback expects two parameters: error and options
         callback(null, corsOptions)
     }
 })
-
 
 app.register(routers)
 
