@@ -59,6 +59,7 @@ export default async function (app: FastifyInstance) {
         })
 
         const { message } = schema.parse(request.body);
+
         const objectStore = {
             message
         }

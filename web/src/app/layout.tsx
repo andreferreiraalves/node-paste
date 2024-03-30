@@ -1,5 +1,6 @@
-import "bootstrap/dist/css/bootstrap.min.css";
-import BootstrapClient from "./BootstrapClient";
+// import "bootstrap/dist/css/bootstrap.min.css";
+// import BootstrapClient from "./BootstrapClient";
+import TailwindClient from "./TailwindClient";
 import "./global.css";
 
 export default function RootLayout({
@@ -12,10 +13,9 @@ export default function RootLayout({
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
-      {/* <script src="bootstrap/dist/js/bootstrap.bundle.js"></script> */}
       <body>
         {children}
-        <BootstrapClient />
+        <TailwindClient />
       </body>
     </html>
   );
