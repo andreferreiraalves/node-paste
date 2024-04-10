@@ -57,7 +57,6 @@ export default async function (app: FastifyInstance) {
         const schema = z.object({
             message: z.string().min(3)
         })
-
         const { message } = schema.parse(request.body);
 
         const objectStore = {
