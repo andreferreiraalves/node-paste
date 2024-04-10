@@ -28,8 +28,6 @@ export default function MainPage() {
     });
 
     const response = await result.json();
-    console.log(response.key);
-
     navigator.clipboard.writeText(`${getApiUrl()}/${response.key}`);
     alert("Link copiado para clipbloard");
   };
