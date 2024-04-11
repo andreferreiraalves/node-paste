@@ -3,7 +3,11 @@
 import getApiUrl from "@/helpers/api";
 import { ChangeEvent, FormEvent, useState } from "react";
 
-export default function MainPage() {
+interface MainPageProps {
+  id?: string;
+}
+
+export default function MainPage({ id }: MainPageProps) {
   const [message, setMessage] = useState("");
 
   const onChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
@@ -51,9 +55,9 @@ export default function MainPage() {
               >
                 <path
                   stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
                   d="M13 1h5m0 0v5m0-5-5 5M1.979 6V1H7m0 16.042H1.979V12M18 12v5.042h-5M13 12l5 5M2 1l5 5m0 6-5 5"
                 />
               </svg>
