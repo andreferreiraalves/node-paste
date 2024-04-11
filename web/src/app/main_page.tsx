@@ -1,7 +1,7 @@
 "use client";
 
 import getApiUrl from "@/helpers/api";
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 
 interface MainPageProps {
   id?: string;
@@ -9,6 +9,10 @@ interface MainPageProps {
 
 export default function MainPage({ id }: MainPageProps) {
   const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    if (id) load();
+  }, []);
 
   const onChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setMessage(e.target.value);
@@ -32,8 +36,14 @@ export default function MainPage({ id }: MainPageProps) {
     });
 
     const response = await result.json();
-    navigator.clipboard.writeText(`${getApiUrl()}/${response.key}`);
+    navigator.clipboard.writeText(`${location.origin}/${response.key}`);
     alert("Link copiado para clipbloard");
+  };
+
+  const load = async () => {
+    const data = await fetch(getApiUrl() + "/" + id);
+    const reponse = await data.json();
+    setMessage(reponse.message);
   };
 
   return (
@@ -82,16 +92,19 @@ export default function MainPage({ id }: MainPageProps) {
               placeholder="Write an article..."
               value={message}
               onChange={onChange}
+              disabled={!!id}
               required
             />
           </div>
         </div>
-        <button
-          type="submit"
-          className="inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 hover:bg-blue-800"
-        >
-          Publish post
-        </button>
+        {!id && (
+          <button
+            type="submit"
+            className="inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 hover:bg-blue-800"
+          >
+            Publish post
+          </button>
+        )}
       </form>
     </main>
   );
