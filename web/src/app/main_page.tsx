@@ -46,6 +46,10 @@ export default function MainPage({ id }: MainPageProps) {
     setMessage(reponse.message);
   };
 
+  const copyConetnt = () => {
+    navigator.clipboard.writeText(message);
+  };
+
   return (
     <main className="p-11">
       <form onSubmit={send}>
@@ -55,32 +59,10 @@ export default function MainPage({ id }: MainPageProps) {
               type="button"
               data-tooltip-target="tooltip-fullscreen"
               className="p-2 text-gray-500 rounded cursor-pointer sm:ms-auto hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600"
+              onClick={copyConetnt}
             >
-              <svg
-                className="w-4 h-4"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 19 19"
-              >
-                <path
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M13 1h5m0 0v5m0-5-5 5M1.979 6V1H7m0 16.042H1.979V12M18 12v5.042h-5M13 12l5 5M2 1l5 5m0 6-5 5"
-                />
-              </svg>
-              <span className="sr-only">Full screen</span>
+              <i className="fa-regular fa-copy"></i>
             </button>
-            <div
-              id="tooltip-fullscreen"
-              role="tooltip"
-              className="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"
-            >
-              Show full screen
-              <div className="tooltip-arrow" data-popper-arrow></div>
-            </div>
           </div>
           <div className="px-4 py-2 bg-white rounded-b-lg dark:bg-gray-800">
             <label htmlFor="editor" className="sr-only">
