@@ -70,7 +70,7 @@ export default function MainPage({ id }: MainPageProps) {
             </label>
             <textarea
               id="editor"
-              className="block w-full px-0 text-sm text-gray-800 bg-white border-0 dark:bg-gray-800 focus:ring-0 dark:text-white dark:placeholder-gray-400"
+              className="h-96 block w-full px-0 text-sm text-gray-800 bg-white border-0 dark:bg-gray-800 focus:ring-0 dark:text-white dark:placeholder-gray-400"
               placeholder="Write an article..."
               value={message}
               onChange={onChange}
