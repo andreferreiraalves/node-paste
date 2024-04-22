@@ -41,7 +41,14 @@ export default function MainPage({ id }: MainPageProps) {
   };
 
   const load = async () => {
-    const data = await fetch(getApiUrl() + "/" + id);
+    const data = await fetch(getApiUrl() + "/" + id, {
+      method: "get",
+      cache: "no-cache",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
     const reponse = await data.json();
     setMessage(reponse.message);
   };

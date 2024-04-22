@@ -1,18 +1,30 @@
 version: '3.8'
 
 services:
-  postgres:
-    image: bitnami/postgresql:latest
-    ports:
-      - "5432:5432"
-    environment:
-      - POSTGRES_USER=docker
-      - POSTGRES_PASSWORD=docker
-      - POSTGRES_DB=shortlinks
-
   redis:
     image: bitnami/redis:latest
     ports:
       - "6379:6379"
     environment:
       - REDIS_PASSWORD=docker
+
+  # note-web:
+  #   build: ./web/
+  #   image: note-web:1.0
+  #   ports:
+  #     - "3000:3000"
+  #   depends_on:
+  #     - note-api
+  #   environment:
+  #     - NEXT_PUBLIC_API_URL=http://localhost:4000/api
+
+  note-api:
+    build: ./api/
+    image: note-api:1.0
+    ports:
+      - "3000:3000"
+    depends_on:
+      - redis
+    environment:
+      - REDIS_SERVER=redis
+      - REDIS_PORT=6379

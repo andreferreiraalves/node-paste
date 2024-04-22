@@ -3,7 +3,7 @@ import 'dotenv/config';
 import fastify from "fastify";
 import routers from './routes';
 
-const PORT = process.env.API_PORT
+const { API_PORT = '3000', API_ADDRESS = 'localhost' } = process.env
 
 const app = fastify()
 
@@ -15,7 +15,8 @@ app.register(cors, {
 app.register(routers)
 
 app.listen({
-    port: parseInt(PORT ?? '3000'),
+    host: API_ADDRESS,
+    port: parseInt(API_PORT),
 }).then(() => {
-    console.log(`server running on port ${PORT}`)
+    console.log(`server running on port ${API_PORT}`)
 })
