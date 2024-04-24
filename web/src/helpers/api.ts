@@ -1,3 +1,9 @@
+var href: string;
+
 export default function getApiUrl() {
-    return process.env.NEXT_PUBLIC_API_URL ?? "";
+    if (!href)
+        href = process.env.NEXT_PUBLIC_API_URL ?? window.location.href
+
+    console.log(href);
+    return href;
 }
