@@ -24,8 +24,6 @@ services:
     container_name: node-api
     build: ./api/
     image: note-api:1.0
-    ports:
-      - "3000:3000"
     depends_on:
       - redis
     environment:
@@ -35,7 +33,7 @@ services:
   nginx:
     build: ./nginx/
     container_name: node-nginx
-    # ports:
-    #   - "3333:3333"
+    ports:
+      - "3000:3000"
     depends_on:
       - note-api
