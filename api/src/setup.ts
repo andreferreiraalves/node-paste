@@ -1,4 +1,4 @@
-import { sql } from "./lib/postgres";
+import { sql } from "./lib/postgres.js"
 
 async function setup() {
     await sql /*sql*/`

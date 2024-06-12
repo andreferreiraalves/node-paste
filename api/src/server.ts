@@ -3,8 +3,8 @@ import multipart from '@fastify/multipart'
 
 import 'dotenv/config';
 import fastify from "fastify";
-import upload_routers from './reoutes/upload_routers.js';
-import message_routes from './reoutes/message_routes.js';
+import upload_routers from './routers/upload_routers.js';
+import message_routes from './routers/message_routes.js';
 
 const { API_ADDRESS = 'localhost' } = process.env
 const API_PORT = 4000

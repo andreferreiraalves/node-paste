@@ -1,7 +1,7 @@
 import { randomUUID } from "crypto";
 import { FastifyInstance } from "fastify";
 import { z } from "zod";
-import { redis } from "../lib/redis";
+import { redis } from "../lib/redis.js";
 
 export default async function message_routes(app: FastifyInstance) {
     app.post('/api/message', async (request, reply) => {

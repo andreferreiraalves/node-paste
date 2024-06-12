@@ -1,7 +1,6 @@
 import { randomUUID } from "crypto";
 import { FastifyInstance } from "fastify";
 import { z } from "zod";
-import { redis } from "../lib/redis";
 
 // app.get('/:code', async (request, reply) => {
 //     const getLinkSchema = z.object({
@@ -52,7 +51,7 @@ import { redis } from "../lib/redis";
 // })
 
 
-export default async function (app: FastifyInstance) {
+export default async function(app: FastifyInstance) {
 
 
 }
