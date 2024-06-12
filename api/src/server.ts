@@ -1,9 +1,13 @@
 import cors from '@fastify/cors';
+import multipart from '@fastify/multipart'
+
 import 'dotenv/config';
 import fastify from "fastify";
-import routers from './routes';
+import upload_routers from './reoutes/upload_routers.js';
+import message_routes from './reoutes/message_routes.js';
 
-const { API_PORT = '3000', API_ADDRESS = 'localhost' } = process.env
+const { API_ADDRESS = 'localhost' } = process.env
+const API_PORT = 4000
 
 const app = fastify()
 
@@ -12,11 +16,19 @@ app.register(cors, {
     origin: '*',
 });
 
-app.register(routers)
+app.register(multipart);
 
-app.listen({
-    host: API_ADDRESS,
-    port: parseInt(API_PORT),
-}).then(() => {
-    console.log(`server running on port ${API_PORT}`)
-})
+app.register(upload_routers)
+app.register(message_routes);
+
+const start = async () => {
+    try {
+        await app.listen({ host: API_ADDRESS, port: API_PORT })
+        console.log(`server running on port ${API_PORT}`)
+    } catch (err) {
+        app.log.error(err)
+        process.exit(1)
+    }
+}
+
+start()
