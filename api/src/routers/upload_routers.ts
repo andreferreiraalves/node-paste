@@ -1,10 +1,12 @@
 import { FastifyInstance } from "fastify";
 
 export default async function upload_routers(app: FastifyInstance) {
-    app.post('/api/upload', async (requrest, reply) => {
-        const data = await requrest.file();
+    app.post('/api/upload', async (request, reply) => {
+        const files = request.files();
 
-        console.log(data);
+        for await (const file of files) {
+
+        }
 
         return reply.status(200);
     })
