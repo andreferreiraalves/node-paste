@@ -40,3 +40,6 @@
 /web/*.tsbuildinfo
 /web/next-env.d.ts
 /web/.env
+
+/api2/target
+/api2/.env
