@@ -1,1 +1,5 @@
-GET  http://localhost:8080/records
+GET  http://localhost:8080/record
+
+###
+
+GET  http://localhost:8080/record/a0ad277d-06b3-481a-9286-e99a78fd9aee
