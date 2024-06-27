@@ -3,7 +3,7 @@
 diesel::table! {
     records (id) {
         id -> Uuid,
-        content -> Nullable<Varchar>,
+        message -> Nullable<Varchar>,
         file_name -> Nullable<Varchar>,
     }
 }

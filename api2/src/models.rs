@@ -10,8 +10,8 @@ pub struct Record {
     pub file_name: Option<String>,
 }
 
-#[derive(Insertable, Serialize, Deserialize)]
+#[derive(Insertable, Serialize, Deserialize, Debug)]
 #[table_name = "records"]
-pub struct NewRecord<'a> {
-    pub content: &'a str,
+pub struct NewRecord {
+    pub content: String,
 }
