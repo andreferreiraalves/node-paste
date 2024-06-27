@@ -6,12 +6,12 @@ use uuid::Uuid;
 #[derive(Queryable, Serialize)]
 pub struct Record {
     pub id: Uuid,
-    pub content: Option<String>,
+    pub message: Option<String>,
     pub file_name: Option<String>,
 }
 
 #[derive(Insertable, Serialize, Deserialize, Debug)]
 #[table_name = "records"]
 pub struct NewRecord {
-    pub content: String,
+    pub message: String,
 }
