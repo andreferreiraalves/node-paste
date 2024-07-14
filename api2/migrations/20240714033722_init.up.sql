@@ -1,4 +1,4 @@
--- Your SQL goes here
+-- Add up migration script here
 CREATE TABLE records (
   ID uuid DEFAULT gen_random_uuid(),
   MESSAGE VARCHAR,
