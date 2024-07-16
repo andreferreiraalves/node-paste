@@ -1,6 +1,5 @@
-use std::{fmt::format, result};
-
-use actix_web::{body, get, patch, post, web, HttpResponse, Responder};
+use actix_web::{delete, get, patch, post, web, HttpResponse, Responder};
+use serde_json::json;
 
 use crate::{
     model::RecordModel,
@@ -8,7 +7,13 @@ use crate::{
     AppState,
 };
 
-#[get("/api/records")]
+#[get("/healthchecker")]
+async fn health_checker_handler() -> impl Responder {
+    const MESSAGE: &str = "App is running";
+    HttpResponse::Ok().json(json!({"status": "success","message": MESSAGE}))
+}
+
+#[get("/records")]
 async fn record_list_handler(
     opts: web::Query<FilterOptions>,
     data: web::Data<AppState>,
@@ -32,15 +37,15 @@ async fn record_list_handler(
     //     .collect::<Vec<NoteModelResponse>>();
     //
     let json_response = serde_json::json!({
-        "status": "success",
-        "results":records.len(),
-        "records": records,
+         "status": "success",
+         "results":records.len(),
+         "records": records,
     });
 
     HttpResponse::Ok().json(json_response)
 }
 
-#[get("/api/records/{id}")]
+#[get("/records/{id}")]
 async fn get_record_handler(
     path: web::Path<uuid::Uuid>,
     data: web::Data<AppState>,
@@ -79,7 +84,7 @@ async fn get_record_handler(
     }
 }
 
-#[post("/api/records")]
+#[post("/records")]
 async fn create_record_handler(
     body: web::Json<CreateRecordSchema>,
     data: web::Data<AppState>,
@@ -135,7 +140,7 @@ async fn create_record_handler(
     }
 }
 
-#[patch("/api/records/{id}")]
+#[patch("/records/{id}")]
 async fn edit_record_handler(
     path: web::Path<uuid::Uuid>,
     body: web::Json<CreateRecordSchema>,
@@ -225,4 +230,48 @@ async fn edit_record_handler(
             "message" : format!("{:?}", e)
         })),
     }
+}
+
+#[delete("/records/{id}")]
+async fn delete_record_handler(
+    path: web::Path<uuid::Uuid>,
+    data: web::Data<AppState>,
+) -> impl Responder {
+    let record_id = path.into_inner();
+
+    let query_result = sqlx::query!(r#"delete from records where id = $1"#, record_id)
+        .execute(&data.db)
+        .await;
+
+    match query_result {
+        Ok(result) => {
+            if result.rows_affected() == 0 {
+                let message = format!("Record with id: {} not found", record_id);
+                HttpResponse::NotFound().json(json!({"status": "fail",
+                "message": message
+                }))
+            } else {
+                HttpResponse::NoContent().finish()
+            }
+        }
+        Err(e) => {
+            let message = format!("Internal server erro: {}", e);
+            HttpResponse::InternalServerError().json(json!({
+                "status": "error",
+                "message": message,
+            }))
+        }
+    }
+}
+
+pub fn config(conf: &mut web::ServiceConfig) {
+    let scope = web::scope("/api")
+        .service(health_checker_handler)
+        .service(record_list_handler)
+        .service(get_record_handler)
+        .service(create_record_handler)
+        .service(edit_record_handler)
+        .service(delete_record_handler);
+
+    conf.service(scope);
 }
