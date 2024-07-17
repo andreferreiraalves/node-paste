@@ -31,11 +31,6 @@ async fn record_list_handler(
     .await
     .unwrap();
 
-    // let note_responses = notes
-    //     .into_iter()
-    //     .map(|note| filter_db_record(&note))
-    //     .collect::<Vec<NoteModelResponse>>();
-    //
     let json_response = serde_json::json!({
          "status": "success",
          "results":records.len(),

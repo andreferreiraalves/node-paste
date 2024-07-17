@@ -36,7 +36,8 @@ export default function MainPage({ id }: MainPageProps) {
     });
 
     const response = await result.json();
-    navigator.clipboard.writeText(`${location.origin}/${response.key}`);
+
+    navigator.clipboard.writeText(`${location.origin}/${response?.data?.record?.id}`);
     alert("Link copiado para clipbloard");
   };
 
@@ -49,8 +50,8 @@ export default function MainPage({ id }: MainPageProps) {
       },
     });
 
-    const reponse = await data.json();
-    setMessage(reponse.message);
+    const response = await data.json();
+    setMessage(response?.record?.message);
   };
 
   const copyConetnt = () => {
