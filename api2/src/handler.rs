@@ -95,6 +95,7 @@ async fn create_record_handler(
         sqlx::query(r#"insert into records (id, message, file_name) values ($1, $2, $3)"#)
             .bind(record_id.clone())
             .bind(body.message.to_owned().unwrap_or_default())
+            .bind(body.file_name.to_owned().unwrap_or_default())
             .execute(&data.db)
             .await
             .map_err(|err: sqlx::Error| err.to_string());
