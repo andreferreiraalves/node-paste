@@ -1,0 +1,30 @@
+POST http://localhost:8080/api/records
+content-type: application/json
+
+{
+    "message": "testes"
+}
+
+###
+
+get http://localhost:8080/api/records/b86e827d-59cc-4980-a9e7-6019da15fe64
+content-type: application/json
+
+###
+
+get http://localhost:8080/api/records
+content-type: application/json
+
+###
+
+PATCH http://localhost:8080/api/records/b86e827d-59cc-4980-a9e7-6019da15fe64
+content-type: application/json
+
+{
+    "message": "mesnagem alterada"
+}
+
+###
+
+DELETE  http://localhost:8080/api/records/b86e827d-59cc-4980-a9e7-6019da15fe64
+content-type: application/json
