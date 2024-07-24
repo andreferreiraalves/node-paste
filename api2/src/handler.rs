@@ -1,9 +1,10 @@
-use actix_web::{delete, get, patch, post, web, HttpResponse, Responder};
+use actix_multipart::form::MultipartForm;
+use actix_web::{delete, get, patch, post, web, Error, HttpResponse, Responder, Result};
 use serde_json::json;
 
 use crate::{
     model::RecordModel,
-    schema::{CreateRecordSchema, FilterOptions},
+    schema::{CreateRecordSchema, FilterOptions, UploadForm},
     AppState,
 };
 
@@ -260,6 +261,25 @@ async fn delete_record_handler(
     }
 }
 
+#[post("/upload")]
+async fn upload(MultipartForm(form): MultipartForm<UploadForm>) -> Result<HttpResponse, Error> {
+    for f in form.files {
+        let path = format!("../temp/{}", f.file_name.unwrap());
+        f.file.persist(path).unwrap();
+    }
+
+    Ok(HttpResponse::Ok().json(json!({
+        "status": "success"
+    })))
+}
+
+#[get("/download")]
+async fn download() -> Result<HttpResponse> {
+    Ok(HttpResponse::Ok()
+        .content_type("text/html")
+        .body(include_str!("../temp/arquivo.txt")))
+}
+
 pub fn config(conf: &mut web::ServiceConfig) {
     let scope = web::scope("/api")
         .service(health_checker_handler)
@@ -267,7 +287,9 @@ pub fn config(conf: &mut web::ServiceConfig) {
         .service(get_record_handler)
         .service(create_record_handler)
         .service(edit_record_handler)
-        .service(delete_record_handler);
+        .service(delete_record_handler)
+        .service(upload)
+        .service(download);
 
     conf.service(scope);
 }
