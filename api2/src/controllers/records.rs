@@ -1,25 +1,18 @@
-use std::path::PathBuf;
-
-use actix_multipart::form::MultipartForm;
-use actix_web::{
-    delete, get, patch, post, web, Error, HttpRequest, HttpResponse, Responder, Result,
-};
-use serde_json::json;
-use tokio::{fs::File, io::AsyncReadExt};
+use actix_web::{delete, get, post, put, web, HttpResponse, Responder};
 
 use crate::{
     model::RecordModel,
-    schema::{CreateRecordSchema, FilterOptions, UploadForm},
+    schema::{CreateRecordSchema, FilterOptions},
     AppState,
 };
 
 #[get("/healthchecker")]
 async fn health_checker_handler() -> impl Responder {
     const MESSAGE: &str = "App is running";
-    HttpResponse::Ok().json(json!({"status": "success","message": MESSAGE}))
+    HttpResponse::Ok().json(serde_json::json!({"status": "success","message": MESSAGE}))
 }
 
-#[get("/records")]
+#[get("")]
 async fn record_list_handler(
     opts: web::Query<FilterOptions>,
     data: web::Data<AppState>,
@@ -46,7 +39,7 @@ async fn record_list_handler(
     HttpResponse::Ok().json(json_response)
 }
 
-#[get("/records/{id}")]
+#[get("/{id}")]
 async fn get_record_handler(
     path: web::Path<uuid::Uuid>,
     data: web::Data<AppState>,
@@ -85,7 +78,7 @@ async fn get_record_handler(
     }
 }
 
-#[post("/records")]
+#[post("")]
 async fn create_record_handler(
     body: web::Json<CreateRecordSchema>,
     data: web::Data<AppState>,
@@ -142,7 +135,7 @@ async fn create_record_handler(
     }
 }
 
-#[patch("/records/{id}")]
+#[put("/{id}")]
 async fn edit_record_handler(
     path: web::Path<uuid::Uuid>,
     body: web::Json<CreateRecordSchema>,
@@ -234,7 +227,7 @@ async fn edit_record_handler(
     }
 }
 
-#[delete("/records/{id}")]
+#[delete("/{id}")]
 async fn delete_record_handler(
     path: web::Path<uuid::Uuid>,
     data: web::Data<AppState>,
@@ -249,7 +242,7 @@ async fn delete_record_handler(
         Ok(result) => {
             if result.rows_affected() == 0 {
                 let message = format!("Record with id: {} not found", record_id);
-                HttpResponse::NotFound().json(json!({"status": "fail",
+                HttpResponse::NotFound().json(serde_json::json!({"status": "fail",
                 "message": message
                 }))
             } else {
@@ -258,7 +251,7 @@ async fn delete_record_handler(
         }
         Err(e) => {
             let message = format!("Internal server erro: {}", e);
-            HttpResponse::InternalServerError().json(json!({
+            HttpResponse::InternalServerError().json(serde_json::json!({
                 "status": "error",
                 "message": message,
             }))
@@ -266,47 +259,13 @@ async fn delete_record_handler(
     }
 }
 
-#[post("/upload")]
-async fn upload(MultipartForm(form): MultipartForm<UploadForm>) -> Result<HttpResponse, Error> {
-    for f in form.files {
-        let path = format!("../temp/{}", f.file_name.unwrap());
-        f.file.persist(path).unwrap();
-    }
-
-    Ok(HttpResponse::Ok().json(json!({
-        "status": "success"
-    })))
-}
-
-#[get("/download")]
-async fn download() -> Result<HttpResponse> {
-    let file_path: PathBuf = "./temp/arquivo.txt".into();
-
-    let mut file = File::open(&file_path)
-        .await
-        .map_err(actix_web::error::ErrorInternalServerError)?;
-
-    let mut buffer = Vec::new();
-    file.read_to_end(&mut buffer)
-        .await
-        .map_err(actix_web::error::ErrorInternalServerError)?;
-
-    Ok(HttpResponse::Ok()
-        .content_type("application/octet-stream")
-        .insert_header(("Content-Disposition", "attachment; filename=file.txt"))
-        .body(buffer))
-}
-
 pub fn config(conf: &mut web::ServiceConfig) {
-    let scope = web::scope("/api")
-        .service(health_checker_handler)
+    let scope = web::scope("/api/records")
         .service(record_list_handler)
         .service(get_record_handler)
         .service(create_record_handler)
         .service(edit_record_handler)
-        .service(delete_record_handler)
-        .service(upload)
-        .service(download);
+        .service(delete_record_handler);
 
     conf.service(scope);
 }

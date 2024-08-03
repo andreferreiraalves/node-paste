@@ -3,7 +3,7 @@ use actix_web::{http::header, middleware::Logger, web, App, HttpServer};
 use dotenv::dotenv;
 use sqlx::{postgres::PgPoolOptions, PgPool};
 
-mod handler;
+mod controllers;
 mod model;
 mod schema;
 
@@ -51,7 +51,8 @@ async fn main() -> std::io::Result<()> {
 
         App::new()
             .app_data(web::Data::new(AppState { db: pool.clone() }))
-            .configure(handler::config)
+            .configure(controllers::records::config)
+            .configure(controllers::files::config)
             .wrap(cors)
             .wrap(Logger::default())
     })
