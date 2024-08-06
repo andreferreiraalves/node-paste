@@ -5,23 +5,50 @@ use actix_web::{get, post, web, Error, HttpResponse, Result};
 use serde_json::json;
 use tokio::{fs::File, io::AsyncReadExt};
 
-use crate::schema::UploadForm;
+use crate::{schema::UploadForm, AppState};
 
 #[post("/upload")]
-async fn upload(MultipartForm(form): MultipartForm<UploadForm>) -> Result<HttpResponse, Error> {
+async fn upload(
+    MultipartForm(form): MultipartForm<UploadForm>,
+    data: web::Data<AppState>,
+    // ) -> Result<HttpResponse, Error> {
+) -> HttpResponse {
+    let new_guid = uuid::Uuid::new_v4();
+
     for f in form.files {
-        let path = format!("../temp/{}", f.file_name.unwrap());
-        f.file.persist(path).unwrap();
+        let file_name = f.file_name.unwrap();
+        let path = format!("./temp/{}", new_guid.to_string());
+
+        let query_result = sqlx::query!(
+            r"insert into records (ID, FILE_NAME, file_path) values ($1, $2, $3)",
+            new_guid,
+            &file_name,
+            "./temp/"
+        )
+        .execute(&data.db)
+        .await
+        .map_err(|err: sqlx::Error| err.to_string());
+
+        if let Err(err) = query_result {
+            return HttpResponse::InternalServerError().json(serde_json::json!({"error": err}));
+        }
+
+        let file_result = f.file.persist(path);
+
+        if let Err(e) = file_result {
+            return HttpResponse::InternalServerError()
+                .json(serde_json::json!({"error": e.to_string()}));
+        }
     }
 
-    Ok(HttpResponse::Ok().json(json!({
+    HttpResponse::Ok().json(json!({
         "status": "success"
-    })))
+    }))
 }
 
-#[get("/download")]
-async fn download() -> Result<HttpResponse> {
-    let file_path: PathBuf = "./temp/arquivo.txt".into();
+#[get("/download/{filename}")]
+async fn download(filename: web::Path<String>) -> Result<HttpResponse> {
+    let file_path: PathBuf = format!("./temp/{}", filename).into();
 
     let mut file = File::open(&file_path)
         .await

@@ -1,4 +1,6 @@
-POST http://localhost:8080/api/records
+@baseUrl = http://localhost:8080/api
+
+POST {{baseUrl}}/records
 content-type: application/json
 
 {
@@ -7,17 +9,17 @@ content-type: application/json
 
 ###
 
-get http://localhost:8080/api/records/b86e827d-59cc-4980-a9e7-6019da15fe64
+get {{baseUrl}}/records/b86e827d-59cc-4980-a9e7-6019da15fe64
 content-type: application/json
 
 ###
 
-get http://localhost:8080/api/records
+get {{baseUrl}}/records
 content-type: application/json
 
 ###
 
-PATCH http://localhost:8080/api/records/b86e827d-59cc-4980-a9e7-6019da15fe64
+PATCH {{baseUrl}}/records/b86e827d-59cc-4980-a9e7-6019da15fe64
 content-type: application/json
 
 {
@@ -26,5 +28,11 @@ content-type: application/json
 
 ###
 
-DELETE  http://localhost:8080/api/records/b86e827d-59cc-4980-a9e7-6019da15fe64
+DELETE  {{baseUrl}}/records/b86e827d-59cc-4980-a9e7-6019da15fe64
 content-type: application/json
+
+###
+
+POST {{baseUrl}}/files/upload
+Content-Disposition: form-data; name=teste.txt; filename=/home/andre/Desktop/teste.txt
+Content-Type: multipart/form-data; 

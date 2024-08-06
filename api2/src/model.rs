@@ -7,4 +7,6 @@ pub struct RecordModel {
     pub id: Uuid,
     pub message: Option<String>,
     pub file_name: Option<String>,
+    pub file_guid: Option<Uuid>,
+    pub file_path: Option<String>,
 }
