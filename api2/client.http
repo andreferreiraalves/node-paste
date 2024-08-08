@@ -36,3 +36,8 @@ content-type: application/json
 POST {{baseUrl}}/files/upload
 Content-Disposition: form-data; name=teste.txt; filename=/home/andre/Desktop/teste.txt
 Content-Type: multipart/form-data; 
+
+### 
+
+GET {{baseUrl}}/files/download/1796ede2-666b-48ec-a86e-6fbf4d66fef1
+Content-Type: application/javascript
