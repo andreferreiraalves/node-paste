@@ -1,7 +1,7 @@
 use std::path::PathBuf;
 
 use actix_multipart::form::MultipartForm;
-use actix_web::{get, post, web, Error, HttpResponse, Responder, Result};
+use actix_web::{get, post, web, HttpResponse, Responder};
 use serde_json::json;
 use tokio::{fs::File, io::AsyncReadExt};
 
@@ -11,7 +11,6 @@ use crate::{model::RecordModel, schema::UploadForm, AppState};
 async fn upload(
     MultipartForm(form): MultipartForm<UploadForm>,
     data: web::Data<AppState>,
-    // ) -> Result<HttpResponse, Error> {
 ) -> impl Responder {
     let new_guid = uuid::Uuid::new_v4();
 
@@ -21,7 +20,7 @@ async fn upload(
 
         let query_result = sqlx::query!(
             r"insert into records (ID, FILE_NAME, file_path) values ($1, $2, $3)",
-            new_guid,
+            &new_guid,
             &file_name,
             "./temp/"
         )
@@ -42,7 +41,8 @@ async fn upload(
     }
 
     HttpResponse::Ok().json(json!({
-        "status": "success"
+        "status": "success",
+        "guid": new_guid.to_string(),
     }))
 }
 
@@ -93,22 +93,6 @@ async fn download(guid: web::Path<uuid::Uuid>, data: web::Data<AppState>) -> imp
         .content_type("application/octet-stream")
         .insert_header(("Content-Disposition", file_name))
         .body(buffer)
-
-    // let file_path: PathBuf = format!("./temp/{}", filename).into();
-
-    // let mut file = File::open(&file_path)
-    //     .await
-    //     .map_err(actix_web::error::ErrorInternalServerError)?;
-
-    // let mut buffer = Vec::new();
-    // file.read_to_end(&mut buffer)
-    //     .await
-    //     .map_err(actix_web::error::ErrorInternalServerError)?;
-
-    // Ok(HttpResponse::Ok()
-    //     .content_type("application/octet-stream")
-    //     .insert_header(("Content-Disposition", "attachment; filename=file.txt"))
-    //     .body(buffer))
 }
 
 pub fn config(conf: &mut web::ServiceConfig) {
